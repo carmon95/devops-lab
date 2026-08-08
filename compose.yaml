@@ -1,0 +1,21 @@
+services:
+
+  web:
+    build: .
+    container_name: techstore-web
+    ports:
+      - "8080:80"
+
+  database:
+    image: mysql:8.0
+    container_name: techstore-db
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: techstore
+      MYSQL_USER: techstore
+      MYSQL_PASSWORD: techstorepassword
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+volumes:
+  mysql-data:
