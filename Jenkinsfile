@@ -4,13 +4,6 @@ pipeline {
 
     stages {
 
-        stage('Checkout') {
-            steps {
-                echo 'Obteniendo código desde GitHub...'
-                checkout scm
-            }
-        }
-
         stage('Validate') {
             steps {
                 echo 'Validando estructura del proyecto...'
@@ -31,6 +24,33 @@ pipeline {
                 sh 'docker build -t techstore-web:${BUILD_NUMBER} .'
 
                 echo 'Imagen Docker construida correctamente.'
+            }
+        }
+
+        stage('Docker Test') {
+            steps {
+                echo 'Iniciando contenedor temporal para pruebas...'
+
+                sh '''
+                    docker run -d \
+                        --name techstore-test \
+                        -p 8085:80 \
+                        techstore-web:${BUILD_NUMBER}
+                '''
+
+                echo 'Esperando que Nginx esté disponible...'
+
+                sh '''
+                    sleep 3
+                    curl -f http://localhost:8085
+                '''
+            }
+
+            post {
+                always {
+                    echo 'Eliminando contenedor temporal...'
+                    sh 'docker rm -f techstore-test || true'
+                }
             }
         }
 
