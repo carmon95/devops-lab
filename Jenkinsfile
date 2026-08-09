@@ -28,39 +28,44 @@ pipeline {
         }
 
         stage('Docker Test') {
-    steps {
-        echo 'Iniciando contenedor temporal para pruebas...'
+            steps {
+                echo 'Iniciando contenedor temporal para pruebas...'
 
-        sh '''
-            docker run -d \
-                --name techstore-test \
-                --network jenkins \
-                techstore-web:${BUILD_NUMBER}
-        '''
+                sh '''
+                    docker run -d \
+                        --name techstore-test \
+                        --network jenkins \
+                        techstore-web:${BUILD_NUMBER}
+                '''
 
-        echo 'Esperando que Nginx esté disponible...'
+                echo 'Esperando que Nginx esté disponible...'
 
-        sh '''
-            sleep 3
-            curl -f http://techstore-test
-        '''
-    }
+                sh '''
+                    sleep 3
+                    curl -f http://techstore-test
+                '''
+            }
 
-    post {
-        always {
-            echo 'Eliminando contenedor temporal...'
-            sh 'docker rm -f techstore-test || true'
+            post {
+                always {
+                    echo 'Eliminando contenedor temporal...'
+                    sh 'docker rm -f techstore-test || true'
+                }
+            }
         }
+
     }
-}
-                     
+
     post {
+
         success {
-            echo '🚀 Pipeline ejecutado correctamente.'
+            echo 'Pipeline ejecutado correctamente.'
         }
 
         failure {
-            echo '❌ El pipeline ha fallado.'
+            echo 'El pipeline ha fallado.'
         }
+
     }
+
 }
