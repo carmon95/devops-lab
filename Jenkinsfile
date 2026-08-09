@@ -14,10 +14,23 @@ pipeline {
         stage('Validate') {
             steps {
                 echo 'Validando estructura del proyecto...'
+
                 sh 'test -f Dockerfile'
                 sh 'test -f compose.yaml'
                 sh 'test -f index.html'
+
                 echo 'Validación completada correctamente.'
+            }
+        }
+
+        stage('Docker Build') {
+            steps {
+                echo 'Construyendo imagen Docker...'
+
+                sh 'docker version'
+                sh 'docker build -t techstore-web:${BUILD_NUMBER} .'
+
+                echo 'Imagen Docker construida correctamente.'
             }
         }
 
