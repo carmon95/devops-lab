@@ -28,34 +28,32 @@ pipeline {
         }
 
         stage('Docker Test') {
-            steps {
-                echo 'Iniciando contenedor temporal para pruebas...'
+    steps {
+        echo 'Iniciando contenedor temporal para pruebas...'
 
-                sh '''
-                    docker run -d \
-                        --name techstore-test \
-                        -p 8085:80 \
-                        techstore-web:${BUILD_NUMBER}
-                '''
+        sh '''
+            docker run -d \
+                --name techstore-test \
+                --network jenkins \
+                techstore-web:${BUILD_NUMBER}
+        '''
 
-                echo 'Esperando que Nginx esté disponible...'
+        echo 'Esperando que Nginx esté disponible...'
 
-                sh '''
-                    sleep 3
-                    curl -f http://localhost:8085
-                '''
-            }
-
-            post {
-                always {
-                    echo 'Eliminando contenedor temporal...'
-                    sh 'docker rm -f techstore-test || true'
-                }
-            }
-        }
-
+        sh '''
+            sleep 3
+            curl -f http://techstore-test
+        '''
     }
 
+    post {
+        always {
+            echo 'Eliminando contenedor temporal...'
+            sh 'docker rm -f techstore-test || true'
+        }
+    }
+}
+                     
     post {
         success {
             echo '🚀 Pipeline ejecutado correctamente.'
