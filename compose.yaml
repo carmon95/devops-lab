@@ -1,7 +1,7 @@
 services:
 
   web:
-    build: .
+    image: ${WEB_IMAGE:-techstore-web:latest}
     container_name: techstore-web
     ports:
       - "8080:80"

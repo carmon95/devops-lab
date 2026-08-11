@@ -54,6 +54,19 @@ pipeline {
             }
         }
 
+        stage('Docker Deploy') {
+            steps {
+                echo 'Desplegando nueva versión...'
+
+                sh '''
+                    WEB_IMAGE=techstore-web:${BUILD_NUMBER} \
+                    docker compose up -d
+                '''
+
+                echo 'Despliegue completado correctamente.'
+            }
+        }
+
     }
 
     post {
