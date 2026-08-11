@@ -60,7 +60,7 @@ pipeline {
 
                 sh '''
                     WEB_IMAGE=techstore-web:${BUILD_NUMBER} \
-                    docker compose up -d
+                    docker compose -p docker-compose-lab up -d
                 '''
 
                 echo 'Despliegue completado correctamente.'
