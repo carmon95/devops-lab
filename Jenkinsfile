@@ -11,6 +11,7 @@ pipeline {
                 sh 'test -f Dockerfile'
                 sh 'test -f compose.yaml'
                 sh 'test -f index.html'
+                sh 'test -f environments/dev/compose.yaml'
 
                 echo 'Validación completada correctamente.'
             }
@@ -56,14 +57,17 @@ pipeline {
 
         stage('Docker Deploy') {
             steps {
-                echo 'Desplegando nueva versión...'
+                echo 'Desplegando nueva versión en DEV...'
 
                 sh '''
                     WEB_IMAGE=techstore-web:${BUILD_NUMBER} \
-                    docker compose -p docker-compose-lab up -d
+                    docker compose \
+                    -f environments/dev/compose.yaml \
+                    -p techstore-dev \
+                    up -d
                 '''
 
-                echo 'Despliegue completado correctamente.'
+                echo 'Despliegue en DEV completado correctamente.'
             }
         }
 
@@ -80,5 +84,4 @@ pipeline {
         }
 
     }
-
 }
