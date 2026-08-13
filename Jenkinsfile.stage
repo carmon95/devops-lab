@@ -14,7 +14,7 @@ pipeline {
 
         stage('Validate') {
             steps {
-                echo "Promoviendo techstore-web:${IMAGE_VERSION} a STAGE..."
+                echo "Promoviendo techstore-web:${params.IMAGE_VERSION} a STAGE..."
 
                 sh 'test -f environments/stage/compose.yaml'
             }
@@ -22,11 +22,11 @@ pipeline {
 
         stage('Verify Image') {
             steps {
-                echo "Verificando que techstore-web:${IMAGE_VERSION} existe..."
+                echo "Verificando que techstore-web:${params.IMAGE_VERSION} existe..."
 
-                sh '''
-                    docker image inspect techstore-web:${IMAGE_VERSION}
-                '''
+                sh """
+                    docker image inspect techstore-web:${params.IMAGE_VERSION}
+                """
             }
         }
 
@@ -34,13 +34,13 @@ pipeline {
             steps {
                 echo 'Desplegando versión en STAGE...'
 
-                sh '''
-                    WEB_IMAGE=techstore-web:${IMAGE_VERSION} \
+                sh """
+                    WEB_IMAGE=techstore-web:${params.IMAGE_VERSION} \
                     docker compose \
                     -f environments/stage/compose.yaml \
                     -p techstore-stage \
                     up -d
-                '''
+                """
 
                 echo 'Despliegue en STAGE completado.'
             }
@@ -61,7 +61,7 @@ pipeline {
     post {
 
         success {
-            echo "STAGE actualizado correctamente con techstore-web:${IMAGE_VERSION}"
+            echo "STAGE actualizado correctamente con techstore-web:${params.IMAGE_VERSION}"
         }
 
         failure {
