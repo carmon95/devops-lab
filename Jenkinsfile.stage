@@ -52,7 +52,7 @@ pipeline {
 
                 sh '''
                     sleep 3
-                    curl -f http://localhost:8083
+                    curl -f http://techstore-stage-web
                 '''
             }
         }
