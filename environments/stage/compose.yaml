@@ -1,0 +1,21 @@
+services:
+
+  web:
+    image: ${WEB_IMAGE:-techstore-web:latest}
+    container_name: techstore-stage-web
+    ports:
+      - "8083:80"
+
+  database:
+    image: mysql:8.0
+    container_name: techstore-stage-db
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: techstore
+      MYSQL_USER: techstore
+      MYSQL_PASSWORD: techstorepassword
+    volumes:
+      - techstore-stage-db-data:/var/lib/mysql
+
+volumes:
+  techstore-stage-db-data:
